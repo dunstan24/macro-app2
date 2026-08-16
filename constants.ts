@@ -7,9 +7,9 @@ import tropicaldawn from "./images/tropical-dawn.png";
 import tropicthunder from "./images/tropic-thunder.png";
 import redrooter from "./images/redrooter.png";
 import tripleb from "./images/triple-b.png";
-import bpm from "./images/bpm.png";
+import bpm from "./images/BPM.png";
 import greengrenade from "./images/green-grenade.png";
-import godzilla from "./images/godzilla.png";
+import godzilla from "./images/Godzilla.png";
 
 /**
  * Static data for ingredients and preset mapping.
