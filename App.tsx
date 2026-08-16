@@ -237,6 +237,37 @@ interface SelectionCardProps {
   showValues: boolean;
 }
 
+const CardImage: React.FC<{ src: string; alt: string; dim: boolean }> = ({
+  src,
+  alt,
+  dim,
+}) => {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div className="relative w-24 h-full shrink-0 overflow-hidden bg-gray-900/60 border-r border-white/5">
+      {!loaded && (
+        <div className="absolute inset-0 bg-gray-800/80 animate-pulse flex items-center justify-center">
+          <svg className="w-5 h-5 text-gray-600 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        className={`w-full h-full object-cover transition-all duration-300 ${
+          dim ? "opacity-60" : "opacity-100"
+        } ${loaded ? "scale-100" : "scale-95 opacity-0"}`}
+      />
+    </div>
+  );
+};
+
 const SelectionCard: React.FC<SelectionCardProps> = ({
   id,
   name,
@@ -279,20 +310,10 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
       : "border border-gray-700 bg-gray-900 hover:border-gray-500"
   }`;
 
-  const buttonClasses = `w-16 h-full flex items-center justify-center transition-colors duration-300 shrink-0 border-l border-white/5 ${
-    state === "selected"
-      ? "bg-red-600 hover:bg-red-500"
-      : "bg-green-600 hover:bg-green-500"
-  }`;
-
-  const imgClasses = `w-24 h-full object-cover transition-all duration-500 shrink-0 ${
-    state === "other" ? "opacity-70" : "opacity-100"
-  }`;
-
   return (
     <div className={containerClasses} onClick={() => onToggle(id)}>
       {type === "fruit" && (
-        <img src={image} alt={name} className={imgClasses} />
+        <CardImage src={image} alt={name} dim={state === "other"} />
       )}
       <div className="flex-1 p-4 flex flex-col min-w-0 justify-center gap-1.5">
         <div className="flex items-start gap-1.5">

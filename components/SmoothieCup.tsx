@@ -9,15 +9,45 @@ export const SmoothieCup: React.FC<Props> = ({
   className = "w-full h-full",
   imageUrl,
 }) => {
+  const [loaded, setLoaded] = React.useState(false);
+
   if (imageUrl) {
     return (
       <div
-        className={`relative flex justify-center items-center overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5 ${className}`}
+        className={`relative flex justify-center items-center overflow-hidden rounded-xl bg-gray-900/40 ${className}`}
       >
+        {!loaded && (
+          <div className="absolute inset-0 bg-gray-800/80 animate-pulse flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-gray-600 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          </div>
+        )}
         <img
           src={imageUrl}
           alt="Smoothie Drink"
-          className="w-full h-full object-cover animate-in fade-in zoom-in duration-500"
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
         />
         {/* Subtle glass effect overlay */}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />

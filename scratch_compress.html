@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Image Compressor</title>
+</head>
+<body>
+  <h2>Compressing Images...</h2>
+  <div id="status">Starting...</div>
+  <textarea id="output" style="width:100%; height:400px;"></textarea>
+
+  <script>
+    const imageList = [
+      { name: "BPM.png", varName: "bpm" },
+      { name: "Godzilla.png", varName: "godzilla" },
+      { name: "gorilla.png", varName: "gorilla" },
+      { name: "green-grenade.png", varName: "greengrenade" },
+      { name: "kingkong.png", varName: "kingkong" },
+      { name: "redrooter.png", varName: "redrooter" },
+      { name: "super-berries.png", varName: "superberries" },
+      { name: "triple-b.png", varName: "tripleb" },
+      { name: "tropic-thunder.png", varName: "tropicthunder" },
+      { name: "tropical-dawn.png", varName: "tropicaldawn" }
+    ];
+
+    async function compressAll() {
+      const results = {};
+      const status = document.getElementById("status");
+      
+      for (const item of imageList) {
+        status.innerText = "Loading " + item.name + "...";
+        try {
+          const img = new Image();
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = "./images/" + item.name;
+          });
+
+          // Draw to canvas and resize to max 400px width/height
+          const canvas = document.createElement("canvas");
+          const maxDim = 400;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Export as WebP with 0.8 quality
+          const webpData = canvas.toDataURL("image/webp", 0.82);
+          results[item.varName] = webpData;
+          status.innerText = "Compressed " + item.name + " (" + Math.round(webpData.length / 1024) + " KB)";
+        } catch (e) {
+          status.innerText = "Failed " + item.name + ": " + e.message;
+        }
+      }
+
+      document.getElementById("output").value = JSON.stringify(results);
+      status.innerText = "DONE_ALL_COMPRESSED";
+    }
+
+    compressAll();
+  </script>
+</body>
+</html>
