@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
 
   return {
-    base: "/macro-app2/", // ⬅️ PENTING
+    base: process.env.VERCEL ? "/" : (process.env.VITE_BASE_PATH || "/"),
     server: {
       port: 3000,
       host: "0.0.0.0",
